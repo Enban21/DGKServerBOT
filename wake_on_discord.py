@@ -52,7 +52,7 @@ def message(
     title=None,
     description=None,
     color=discord.Color.blue(),
-    footer="pappape Server System Ver.1.2.4\nDeveloped by Enban21 & pappape\nCopyright © 2024 pappape & Enban21. All rights reserved.",  # デフォルトのフッター
+    footer="pappape Server System Ver.1.2.5\nDeveloped by Enban21 & pappape\nCopyright © 2024 pappape & Enban21. All rights reserved.",  # デフォルトのフッター
     author=None,
     thumbnail=None,
     image=None,
@@ -227,10 +227,20 @@ async def status(interaction: discord.Interaction):
         status_message = ""
         for server in status_data:
             name = server.get("name", "不明なサーバー")
+            if isinstance(name, str): # HTML上での改行ができるようにしたため、Botでも同様に改行されるよう<br>を\nに置き換えます。
+                name = name.replace("<br>", "\n")
             status = server.get("status", "不明")
+            if isinstance(status, str):
+                status = status.replace("<br>", "\n")
             players_online = server.get("players_online", "不明")
+            if isinstance(players_online, str):
+                players_online = players_online.replace("<br>", "\n")
             players_max = server.get("players_max", "不明")
+            if isinstance(players_max, str):
+                players_max = players_max.replace("<br>", "\n")
             version = server.get("version", "不明")
+            if isinstance(version, str):
+                version = version.replace("<br>", "\n")
             
             if status == "営業停止中":
                 server_info = (
