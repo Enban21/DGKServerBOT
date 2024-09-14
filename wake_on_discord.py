@@ -139,7 +139,7 @@ class MyBot(discord.Client):
 
             # ピッチをランダムに設定し、ユーザーごとのピッチ辞書に追加
             if member.id not in self.user_pitches:
-                self.user_pitches[member.id] = random.uniform(0.8, 1.2)
+                self.user_pitches[member.id] = random.uniform(0.6, 1.4)
                 print(f"ユーザー {member.name} にピッチ {self.user_pitches[member.id]} を割り当てました")
 
 
@@ -166,11 +166,11 @@ class MyBot(discord.Client):
         user_id = message.author.id
 
         if message.author.id not in self.user_pitches:
-            self.user_pitches[message.author.id] = random.uniform(0.8, 1.2)
+            self.user_pitches[message.author.id] = random.uniform(0.6, 1.4)
             print(f"ユーザー {message.author.name} にピッチ {self.user_pitches[message.author.id]} を割り当てました")
 
 
-        pitch = self.user_pitches.get(user_id, random.uniform(0.8, 1.2))  # ユーザーごとのピッチを使用（なければランダム）
+        pitch = self.user_pitches.get(user_id, random.uniform(0.6, 1.4))  # ユーザーごとのピッチを使用（なければランダム）
 
         speed = self.reading_speed
         
@@ -216,7 +216,7 @@ class MyBot(discord.Client):
                 for member in channel.members:
                     if member.id != self.user.id:
                         if member.id not in self.user_pitches:
-                            self.user_pitches[member.id] = random.uniform(0.8, 1.2)
+                            self.user_pitches[member.id] = random.uniform(0.6, 1.4)
                             print(f"ユーザー {member.name} にピッチ {self.user_pitches[member.id]} を割り当てました")
 
 

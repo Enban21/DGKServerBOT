@@ -99,12 +99,19 @@ async def get_server_status(interaction):
             players_max = server.get("players_max", "不明")
             version = server.get("version", "不明")
 
-            server_info = (
-                f"**{name}**\n"
-                f"ステータス: {status}\n"
-                f"プレイヤー数: {players_online}/{players_max}\n"
-                f"バージョン: {version}\n\n"
-            )
+            if 'ポート開放状態' in name:
+                server_info = (
+                    f"**{name}**\n"
+                    f"ステータス: {status}\n"
+                    f"プレイヤー数: {players_online}/{players_max}\n"
+                )
+            else:
+                server_info = (
+                    f"**{name}**\n"
+                    f"ステータス: {status}\n"
+                    f"プレイヤー数: {players_online}/{players_max}\n"
+                    f"バージョン: {version}\n\n"
+                )
             status_message += server_info
         
         embed_message = message(
