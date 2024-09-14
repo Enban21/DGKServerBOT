@@ -152,6 +152,6 @@ async def soundlist(interaction: discord.Interaction):
     sound_list = execute_db_query('SELECT name, file FROM sound_effects WHERE guild_id = ?', (guild_id,))
     if sound_list:
         sound_list_text = "\n".join([f"{name}: {url}" for name, url in sound_list])
-        await interaction.response.send_message(f"登録されている効果音:\n{sound_list_text}")
+        await interaction.response.send_message(f"登録されている効果音:\n{sound_list_text}", ephemeral=True)
     else:
-        await interaction.response.send_message("登録されている効果音はありません。")
+        await interaction.response.send_message("登録されている効果音はありません。", ephemeral=True)

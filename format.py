@@ -4,7 +4,7 @@ def message(
     title=None,
     description=None,
     color=discord.Color.blue(),
-    footer="pappape Server System Ver.dev.1.2.5\nDeveloped by Enban21 & pappape\nCopyright © 2024 pappape & Enban21. All rights reserved.",
+    footer="pappape Server System Ver.dev.1.3.0\nDeveloped by Enban21 & pappape\nCopyright © 2024 pappape & Enban21. All rights reserved.",
     author=None,
     thumbnail=None,
     image=None,
