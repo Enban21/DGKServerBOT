@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord import app_commands
 from server_status import start_server, get_server_status
 from format import message
-from playsound import join_vc, disc_vc, sound_add, sound_del, soundlist
+from playsound import join_vc, disc_vc, sound_add, sound_del, soundlist, get_sound_file
 
 # .env ファイルから環境変数をロード
 load_dotenv()
@@ -54,7 +54,8 @@ class MyBot(discord.Client):
             return
 
         guild_id = message.guild.id
-        sound_file = self.get_sound_file(guild_id, message.content)
+        # get_sound_fileを呼び出して効果音ファイルを取得
+        sound_file = get_sound_file(guild_id, message.content)
 
         if sound_file:
             voice_client = message.guild.voice_client
@@ -73,7 +74,7 @@ class MyBot(discord.Client):
                 await message.channel.send(f"効果音 `{message.content}` の再生に失敗しました: {str(e)}")
 
 
-# bot を作成して起動
+# bot を作成
 bot = MyBot(intents=intents)
 
 # コマンド定義
@@ -108,8 +109,6 @@ async def se_del(interaction: discord.Interaction, name: str):
 @bot.tree.command(name="se_list", description="登録されている効果音の一覧表示します")
 async def se_view(interaction: discord.Interaction):
     await soundlist(interaction)
-
-
 
 @bot.tree.command(name='help', description="コマンド一覧を表示します")
 async def help_command(interaction: discord.Interaction):

@@ -1,11 +1,9 @@
 import discord
 import os
 import sqlite3
-import datetime
 import logging
 import requests
 import hashlib
-from discord import app_commands
 from urllib.parse import urlparse
 
 # データベース名
@@ -119,9 +117,35 @@ async def sound_add(interaction: discord.Interaction, name: str, url: str):
 # 効果音削除コマンド
 async def sound_del(interaction: discord.Interaction, name: str):
     guild_id = interaction.guild.id
-    execute_db_query('DELETE FROM sound_effects WHERE guild_id = ? AND name = ?', (guild_id, name), commit=True)
-    await interaction.response.send_message(f"効果音 `{name}` を削除しました。")
+    
+    # まず、削除対象の効果音ファイルパスを取得
+    sound_file = get_sound_file(guild_id, name)
+    
+    if sound_file:
+        try:
+            # ファイルの存在を確認してから削除
+            if os.path.exists(sound_file):
+                os.remove(sound_file)
+                # ファイル削除成功
+                delete_message = f"効果音 `{name}` のファイルを削除しました。"
+            else:
+                # ファイルが存在しなかった場合
+                delete_message = f"効果音 `{name}` のファイルが見つかりませんでした。"
+        except Exception as e:
+            # ファイル削除中にエラーが発生した場合
+            await interaction.response.send_message(f"効果音 `{name}` のファイル削除に失敗しました: {str(e)}")
+            return
+    else:
+        # サウンドファイルがデータベースに存在しない場合
+        await interaction.response.send_message(f"効果音 `{name}` がデータベースに存在しません。")
+        return
 
+    # データベースからエントリを削除
+    execute_db_query('DELETE FROM sound_effects WHERE guild_id = ? AND name = ?', (guild_id, name), commit=True)
+    
+    # 最終的にレスポンスを一度だけ返す
+    await interaction.response.send_message(f"{delete_message} データベースから効果音 `{name}` を削除しました。")
+    
 # 効果音一覧コマンド
 async def soundlist(interaction: discord.Interaction):
     guild_id = interaction.guild.id
