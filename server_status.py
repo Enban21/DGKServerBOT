@@ -7,7 +7,7 @@ from format import message
 async def check_start(interaction):
     for _ in range(180):  # 5分間のループ
         try:
-            with open("status.json", "r", encoding="utf-8") as f:
+            with open("/home/pappape/ServerSystem/status.json", "r", encoding="utf-8") as f:
                 status_data = json.load(f)
 
             server_2_status = next((server for server in status_data if server["name"] in ["Server 2 - DGK3", "Server 2 - DGK4"]), None)
@@ -88,7 +88,7 @@ async def handle_server_error(response, interaction):
 
 async def get_server_status(interaction):
     try:
-        with open("status.json", "r", encoding="utf-8") as f:
+        with open("/home/pappape/ServerSystem/status.json", "r", encoding="utf-8") as f:
             status_data = json.load(f)
         
         status_message = ""

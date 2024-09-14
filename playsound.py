@@ -65,7 +65,7 @@ def download_sound_file(url, guild_id):
         file_name = hashlib.sha256(url.encode('utf-8')).hexdigest()
         extension = os.path.splitext(parsed_url.path)[-1]
         sound_file_name = f"{file_name}{extension}"
-        save_path = f"/data/sounds/{guild_id}/{sound_file_name}"
+        save_path = f"./data/sounds/{guild_id}/{sound_file_name}"
         
         # ディレクトリが存在しない場合は作成
         os.makedirs(os.path.dirname(save_path), exist_ok=True)

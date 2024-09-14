@@ -97,12 +97,12 @@ async def disc(interaction: discord.Interaction):
 # 効果音登録コマンド
 @bot.tree.command(name="se_add", description="効果音を登録します")
 async def se_add(interaction: discord.Interaction, name: str, url: str):
-    await sound_add(interaction)
+    await sound_add(interaction, name, url)
 
 # 効果音削除コマンド
 @bot.tree.command(name="se_del", description="効果音を削除します")
 async def se_del(interaction: discord.Interaction, name: str):
-    await sound_del(interaction)
+    await sound_del(interaction, name)
 
 # 効果音一覧コマンド
 @bot.tree.command(name="se_list", description="登録されている効果音の一覧表示します")
