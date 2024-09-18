@@ -46,19 +46,6 @@ class MyBot(discord.Client):
         except Exception as e:
             print(f'グローバルコマンドの同期に失敗しました: {e}')
 
-    async def on_ready(self):
-        print('ログインしました')
-        new_activity = discord.Game(name="DGKサーバー")
-        await self.change_presence(activity=new_activity)
-
-        try:
-            commands = await self.tree.fetch_commands()
-            print('登録されているコマンド:')
-            for command in commands:
-                print(f' - {command.name}')
-        except Exception as e:
-            print(f'コマンドの取得に失敗しました: {e}')
-
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -80,9 +67,20 @@ class MyBot(discord.Client):
                     return
 
             try:
-                voice_client.play(discord.FFmpegPCMAudio(sound_file))
+                while getattr(self, 'playing', False):
+                    await asyncio.sleep(1)
+                # 再生中の確認
+                if voice_client.is_playing():
+                    return
+                def on_finish(_):
+                    os.remove("message.mp3")
+                    self.playing = False
+                self.playing = True
+                voice_client.play(discord.FFmpegPCMAudio(sound_file), after=on_finish)
             except Exception as e:
                 await message.channel.send(f"効果音 `{message.content}` の再生に失敗しました: {str(e)}")
+                on_finish()
+            return
 
         # メッセージが音声送信チャンネルで送られた場合、読み上げ
         if message.channel.name == "読み上げbot":
@@ -169,18 +167,26 @@ class MyBot(discord.Client):
             self.user_pitches[message.author.id] = random.uniform(0.6, 1.4)
             print(f"ユーザー {message.author.name} にピッチ {self.user_pitches[message.author.id]} を割り当てました")
 
-
         pitch = self.user_pitches.get(user_id, random.uniform(0.6, 1.4))  # ユーザーごとのピッチを使用（なければランダム）
-
         speed = self.reading_speed
-        
-        tts = gTTS(text=text, lang='ja')  # 日本語で読み上げ
-        tts.save("message.mp3")
+
+        try:
+            tts = gTTS(text=text, lang='ja')  # 日本語で読み上げ
+        except:
+            return
+        try:
+            tts.save("message.mp3")
+        except:
+            return
 
         voice_client = message.guild.voice_client
         if voice_client is None:
             channel = message.author.voice.channel
             voice_client = await channel.connect()
+
+        # 再生中の確認
+        if voice_client.is_playing():
+            return
 
         def on_finish(_):
             os.remove("message.mp3")
@@ -189,6 +195,7 @@ class MyBot(discord.Client):
         self.playing = True
         ffmpeg_opts = f"-af 'atempo={speed},asetrate=24000*{pitch}'"
         voice_client.play(discord.FFmpegPCMAudio("message.mp3", **{"options": ffmpeg_opts}), after=on_finish)
+
     
     async def on_ready(self):
         print('ログインしました')
